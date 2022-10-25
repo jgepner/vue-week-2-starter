@@ -158,7 +158,7 @@
                 let date = new Date(this.dateString)  // make date an object
 
                 // is it a valid date? today or in the past?
-                if (!this.dateString || this.dateString === 'Invalid Date' || date > newDate() ) {
+                if (!this.dateString || this.dateString === 'Invalid Date' || date > new Date() ) {
                     this.errors.push('Select a valid date, today or in the past.')
                 }
 

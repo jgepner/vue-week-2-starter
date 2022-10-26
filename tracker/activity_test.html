@@ -59,17 +59,30 @@
         What media?
       </div>
 
-      <div class="form-check-inline">
         <!-- First "media" radio button -->
+        <div class="form-check-inline">
         <input id="media1" class="form-check-input" type="radio" value="Traditional" v-model="medium">
         <label class="form-check-label" for="media1">Traditional</label>
       </div>
 
-      <div class="form-check-inline">
         <!-- Second "media" radio button -->
+      <div class="form-check-inline">
         <input id="media2" class="form-check-input" type="radio" value="Digital" v-model="medium">
         <label class="form-check-label" for="media2">Digital</label>
       </div>
+
+<!--        check box for: Completed?-->
+        <div class="form-check">
+        <input id="completed" class="form-check-input" type="checkbox" value="Completed">
+        <label class="form-check-label" for="completed">Completed?</label>
+        </div>
+
+<!--        Box for Notes-->
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <!-- TODO v-model newStudentName -->
+            <input id="notes" class="form-control">
+        </div>
 
       <div>
         <!-- ADD button using v-on:click -->

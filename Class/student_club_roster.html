@@ -30,20 +30,24 @@
 </head>
 <body>
 
-<div id="app">
+<div id="app"><
 
   <h1>Student Club Roster</h1>
 
   <h2>Add Students</h2>
 
   <!--  TODO display an error message if there are errors in the form   -->
+<!-- v-if only displays if true - not empty -->
+  <p id="error" v-if="error">Form error: {{ error }}</p>
 
   <label for="student-name">Student Name</label>
   <input id="student-name" name="student-name" v-model.trim="newName">
   <br>
+
   <label for="student-id">Student ID</label>
   <input id="student-id" name="student-id" v-model="newID">  <!-- TODO v-model this input to newID -->
   <br>
+
   <label for="student-gpa">Student GPA</label>
   <input id="student-gpa" name="student-gpa" type="number" v-model="newGPA">  <!-- TODO v-model this input to newGPA -->
   <br>
@@ -52,20 +56,33 @@
 
   <h2>Student List</h2>
 
-  <p>There are
-    <span id="student-count">
+  <p><span id="student-count">
             <!-- TODO display student count -->
+        {{ studentCountMessage }}
         </span>
-    student(s) in the club.</p>
+    </p>
 
 
   <ul id="student-list">
     <!-- TODO use v-for to create one li element for each student in the list -->
     <!-- TODO each student should have a click event listener to toggle the selected class -->
+
+    <!--toggleSelect changes the data in the Vue - searchs student list
+and toggles the selected property's value
+v-bind: class"{selected: student.selected"} only add the class if true-->
+    <li v-for="student in students"
+        v-on:click="toggleSelect(student.id)"
+        v-bind:class="{selected: student.selected}">
+
+      <b>Name</b> {{ student.name}},
+      <b> ID:</b> {{ student.id}},
+      <b> GPA:</b> {{ student.gpa }}
     </li>
   </ul>
 
-  <button id="remove-selected-students" >Remove selected students</button>
+  <button id="remove-selected-students" v-on:click="deleteSelected">
+      Remove selected students
+  </button>
 
 </div>
 
@@ -109,6 +126,7 @@
       addStudent(){
 
         // alert("add student clicked")  added to check v-on:click working
+
         this.error = ''
 
         // validate - all fields present
@@ -123,8 +141,20 @@
           return
         }
 
-        // todo create new student
+        // todo create new student object
+        let newStudent = {
+          name: this.newName,
+          id: this.newID,
+          gpa: this.newGPA,
+          selected: false
+        }
         // todo add student to student list
+        this.students.push(newStudent)
+
+        // clear entries
+        this.newName = ''
+        this.newID = ''
+        this.newGPA = ''
       },
 
       toggleSelect(id) {
@@ -142,8 +172,15 @@
       }
     },
     computed: {
-      studentCount() {
-        return this.students.length
+      studentCountMessage() {
+
+          let numberOfStudents = this.students.length
+
+          if (numberOfStudents === 1) {
+            return 'There is 1 student in the club.'
+          } else {
+              return 'There are ' + numberOfStudents + ' students in the club.'
+          }
       }
     }
 

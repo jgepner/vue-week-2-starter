@@ -5,12 +5,15 @@
 
 .Drawing {
     color: green;
+    background-color: cornsilk;
 }
 
 .Sketching {
     color: blue;
+    background-color: lightcyan;
 }
 
 .Painting {
     color: darkred;
+    background-color: pink;
 }

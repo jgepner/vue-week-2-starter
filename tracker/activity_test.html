@@ -27,32 +27,30 @@
         </ul>
       </div>
 
-      <div class="form-group">
-        <!-- TODO display name of activity in the label -->
-        <label class="form-label" for="date">What date did you do this activity?</label>
         <!--  Input for date using v-model to connect this input to "dateString" in data -->
+      <div class="form-group">
+        <label class="form-label" for="date">What date did you do this activity?</label>
         <input id="date" class="form-control" type="date" v-model="dateString">
         <small id="date-help" class="form-text text-muted">
           Date must be today or in the past.
         </small>
       </div>
 
+        <!--  Input for # of hours; use v-model to connect this input to hours in data  -->
       <div class="form-group">
         <label class="form-label" for="hours">How many hours did you practice for?</label>
-        <!--  Input for # of hours; use v-model to connect this input to hours in data  -->
         <input id="hours" class="form-control" type="number" min="0" max="24" v-model.number="hours">
         <small id="hours-help" class="form-text text-muted">
           Enter a number of hours, more than 0, up to a maximum of 24
         </small>
       </div>
 
-      <div class="form-group">
+        <!--  Select Elements using v-for to create option elements -->
+        <div class="form-group">
         <label class="form-label" for="type">What type?</label>
-        <!--  Select Elements -->
         <select class="form-control" v-model="type">
           <option v-for="activityType in types">{{ activityType }}</option>
         </select>
-        <!-- TODO Use v-for to create option elements, one for each type -->
       </div>
 
       <div class="form-label pb-2">
@@ -71,21 +69,28 @@
         <label class="form-check-label" for="media2">Digital</label>
       </div>
 
-<!--        check box for: Completed?-->
+<!--  check box for: Completed?  NOT WORKING-->
         <div class="form-check">
-        <input id="completed" class="form-check-input" type="checkbox" value="Completed">
+            <input id="completed" class="form-check-input" type="checkbox" value="Completed" v-model="completed">
+<!--  alternative input attempt:  -->
+<!--        <input id="completed" class="form-check-input" type="checkbox" value="Completed" v-on:change="true">-->
         <label class="form-check-label" for="completed">Completed?</label>
         </div>
 
-<!--        Box for Notes-->
+<!--   Box for Notes-->
         <div class="form-group">
             <label for="notes">Notes:</label>
-            <!-- TODO v-model newStudentName -->
-            <input id="notes" class="form-control">
+            <input id="notes" class="form-control" v-model="notes">
         </div>
 
-      <div>
+<!-- alternative div for notes: -->
+<!--        <div class="form-group">-->
+<!--            <label for="notes">Notes:</label>-->
+<!--            <textarea id="notes" class="form-control" rows="3" v-model="notes"></textarea>-->
+<!--        </div>-->
+
         <!-- ADD button using v-on:click -->
+      <div>
         <button class="btn btn-primary mt-2" type="button"v-on:click="submit">Add record</button>
       </div>
 
@@ -97,10 +102,10 @@
 
     <div class="card-body">
 
-<!--      Message with ongoing total of records-->
+<!-- Message with ongoing total of records-->
       <h3>{{ totalRecordsMessage }} </h3>
 
-<!--      Table of records-->
+<!-- Table of records-->
       <div id="records">
         <table class="table table-hover">
           <tr>
@@ -108,42 +113,32 @@
             <th>How many hours?</th>
             <th>Type</th>
             <th>Media</th>
+            <th>Completed?</th>
+            <th>Notes</th>
           </tr>
-          <!-- Table of activity records using v-for -->
+ <!-- Table of activity records using v-for -->
           <tr v-for="record in activityRecords" v-bind:class="record.type">
             <td>{{ shortDate(record.date) }}</td>
             <td>{{ record.hours }}</td>
             <td>{{ record.type }}</td>
             <td>{{ record.medium }}</td>
+            <td>{{ record.completed }}</td>
+            <td>{{ record.notes }}</td>
           </tr>
-
-<!--   clearly this is incorrect.  HELP!!         -->
-<!--            <tr v-for="record in activityRecords" v-bind:class="-->
-<!--                    { painting: if (record.type == 'Painting'),-->
-<!--                    sketching: if (record.type == 'Sketching'),-->
-<!--                    drawing: if (record.type == 'Drawing')-->
-<!--                    }">-->
-<!--                <td>{{ shortDate(record.date) }}</td>-->
-<!--                <td>{{ record.hours }}</td>-->
-<!--                <td>{{ record.type }}</td>-->
-<!--                <td>{{ record.medium }}</td>-->
-<!--            </tr>-->
 
         </table>
       </div>
     </div>
   </div>
 
-
   <div class="card">
     <h2 class="card-header">Summary</h2>
 
     <div class="card-body">
 
-      <!-- TODO add computed property to calculate the total hours -->
       <p>You have practiced a total of {{ totalHours }} hours</p>
 
-      <!-- Challenge question! Display a list of the total hours for each type.  -->
+      <!-- TO DO: Challenge question! Display a list of the total hours for each type.  -->
 
     </div>
   </div>
@@ -152,7 +147,6 @@
 
 <script>
 
-  //   TODO create new Vue app here
   let app = Vue.createApp({
     data () {
       return {
@@ -168,6 +162,8 @@
         hours: 1,
         type: 'Painting',
         medium: 'Traditional',
+        completed: '',
+        notes: '',
 
         // used with the select-option in the form
         types: ['Sketching', 'Drawing', 'Painting'],
@@ -182,21 +178,37 @@
 
         let date = new Date(this.dateString)  // make date an object
 
-        // is it a valid date? today or in the past?
+        // Error check: is it a valid date? today or in the past?
         if (!this.dateString || this.dateString === 'Invalid Date' || date > new Date() ) {
           this.errors.push('Select a valid date, today or in the past.')
         }
 
+        // Error check: if less than 0 or more than 24 hours are entered:
         if (this.hours <= 0 || this.hours > 24) {
           this.errors.push('The number of hours must be greater than 0 and less than or equal to 24.')
         }
 
+        // Error check:  if no type entered:
         if (!this.type) {
           this.errors.push('Select a type.')
         }
 
+        // Error check: if no media selected
         if (!this.medium) {
           this.errors.push('Select a medium.')
+        }
+
+// Completed checkbox:  not working
+        if (this.completed) {
+            this.completed = 'Completed'
+        } else {
+            this.completed = 'Not completed'
+        }
+
+        // if more than 40 characters entered:  Also NOT Working YET!!!
+        if (notes.length > 40) {
+
+
         }
 
         // only add record if no errors:
@@ -205,7 +217,10 @@
             date: date,
             hours: this.hours,
             type: this.type,
-            medium: this.medium
+            medium: this.medium,
+            completed: this.completed,
+            notes: this.notes
+
           }
           // add to activityRecords:
           this.activityRecords.push(record)
@@ -217,12 +232,15 @@
           })
         }
       },
+
+      //  Put date in a more readable form:
       shortDate(date) {
         return new Intl.DateTimeFormat('en-US', {timeZone: 'UTC'}).format(date)
 
-      }
+      },
     },
     computed: {
+      //  Have records message make sense to a human:
       totalRecordsMessage() {
 
         let numberOfRecords = this.activityRecords.length
@@ -233,6 +251,8 @@
           return numberOfRecords + ' records'
         }
       },
+
+      // Calculate the total number of hours
       totalHours() {
         let total = 0
         this.activityRecords.forEach(function(record) {

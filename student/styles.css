@@ -16,7 +16,7 @@ th, tr {
     color: black;
     font-weight: bold;
 }
-
+/* didn't need cloak */
 /*[v-cloak] {*/
 /*    display: none;*/
 /*}*/

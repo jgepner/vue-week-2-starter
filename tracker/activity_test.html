@@ -122,8 +122,8 @@
             <td>{{ record.hours }}</td>
             <td>{{ record.type }}</td>
             <td>{{ record.medium }}</td>
-            <td>{{ record.completed }}</td>
-            <td>{{ record.notes }}</td>
+            <td>{{ completedBouleantoText(record.completed) }}</td>
+            <td>{{ shortNotes(record.notes) }}</td>
           </tr>
 
         </table>
@@ -162,7 +162,7 @@
         hours: 1,
         type: 'Painting',
         medium: 'Traditional',
-        completed: '',
+        completed: false,
         notes: '',
 
         // used with the select-option in the form
@@ -199,19 +199,19 @@
         }
 
 // Completed checkbox:  not working
-        if (this.completed) {
-            this.completed = 'Completed'
-        } else {
-            this.completed = 'Not completed'
-        }
+//         if (this.completed) {
+//             this.completed = 'Completed'
+//         } else {
+//             this.completed = 'Not completed'
+//         }
 
-        // if more than 40 characters entered:  Also NOT Working YET!!!
-        if (notes.length > 40) {
+          // if (this.completed) {
+          //     this.completed = 'Completed'
+          // } else {
+          //     this.completed = 'Not completed'
 
 
-        }
-
-        // only add record if no errors:
+              // only add record if no errors:
         if (this.errors.length === 0) {
           let record = {
             date: date,
@@ -220,7 +220,6 @@
             medium: this.medium,
             completed: this.completed,
             notes: this.notes
-
           }
           // add to activityRecords:
           this.activityRecords.push(record)
@@ -236,8 +235,25 @@
       //  Put date in a more readable form:
       shortDate(date) {
         return new Intl.DateTimeFormat('en-US', {timeZone: 'UTC'}).format(date)
+      },
+
+      shortNotes(notes) {
+          if (notes.length <= 40) {
+              return notes
+          } else {
+              let shortNote = notes.substring(0,39)
+              return shortNote + '...'
+          }
 
       },
+
+      completedBouleantoText(completed) {
+          if (completed) {
+              return 'Completed'
+          } else {
+              return 'Not Completed'
+          }
+      }
     },
     computed: {
       //  Have records message make sense to a human:
